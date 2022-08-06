@@ -51,13 +51,17 @@ class _ProductListState extends State<ProductList> {
         centerTitle: true,
         actions: [
           Center(
-            child: Badge(
-                badgeContent: const Text(
-                  '0',
-                  style: TextStyle(color: Colors.white),
-                ),
-                animationDuration: const Duration(microseconds: 500),
-                child: const Icon(Icons.shopping_cart)),
+            child: Consumer(
+              builder: ((context, value, child) {
+                return Badge(
+                    badgeContent: Text(
+                      cart.getCounter().toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    animationDuration: const Duration(microseconds: 500),
+                    child: const Icon(Icons.shopping_cart));
+              }),
+            ),
           ),
           const SizedBox(
             width: 20,
@@ -106,15 +110,28 @@ class _ProductListState extends State<ProductList> {
                         ),
                         InkWell(
                           onTap: () {
-                            dbHelper.insert(Cart(
-                                id: index,
-                                productId: index.toString(),
-                                productName: productName[index].toString(),
-                                initialPrice: productPrice[index],
-                                productPrice: productPrice[index],
-                                quantity: 1,
-                                image: productImage[index].toString(),
-                                unitTag: productUnit[index].toString()));
+                            dbHelper
+                                .insert(Cart(
+                                    id: index,
+                                    productId: index.toString(),
+                                    productName: productName[index].toString(),
+                                    initialPrice: productPrice[index],
+                                    productPrice: productPrice[index],
+                                    quantity: 1,
+                                    image: productImage[index].toString(),
+                                    unitTag: productUnit[index].toString()))
+                                .then((value) {
+                              cart.addTotalPrice(
+                                  double.parse(productPrice[index].toString()));
+                              cart.addToCart();
+                            }).onError((error, stackTrace) {
+                              showDialog(
+                                  context: context,
+                                  useSafeArea: false,
+                                  builder: ((context) {
+                                    return Text(error.toString());
+                                  }));
+                            });
                           },
                           child: Container(
                             height: 30,

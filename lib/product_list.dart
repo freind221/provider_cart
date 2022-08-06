@@ -51,11 +51,11 @@ class _ProductListState extends State<ProductList> {
         centerTitle: true,
         actions: [
           Center(
-            child: Consumer(
+            child: Consumer<CartProvider>(
               builder: ((context, value, child) {
                 return Badge(
                     badgeContent: Text(
-                      cart.getCounter().toString(),
+                      value.getCounter().toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
                     animationDuration: const Duration(microseconds: 500),

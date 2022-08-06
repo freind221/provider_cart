@@ -108,10 +108,13 @@ class _ProductListState extends State<ProductList> {
                           onTap: () {
                             dbHelper.insert(Cart(
                                 id: index,
+                                productId: index.toString(),
                                 productName: productName[index].toString(),
                                 initialPrice: productPrice[index],
-                                image: productImage[index],
-                                unitTag: productUnit[index]));
+                                productPrice: productPrice[index],
+                                quantity: 1,
+                                image: productImage[index].toString(),
+                                unitTag: productUnit[index].toString()));
                           },
                           child: Container(
                             height: 30,
